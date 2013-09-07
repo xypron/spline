@@ -98,7 +98,7 @@ FOR nc = 0 TO 4 'nC * stetig differenzierbar
         REDIM b(anzZeilen)
         REDIM txtExp(idx(nExp, nint)) AS STRING
 
-        PRINT "Fine"; CHR$(48 + nc); CHR$(48 + nGrd); CHR$(48 + nint); CHR$(65 + nExp)
+        PRINT "Spline"; CHR$(48 + nc); CHR$(48 + nGrd); CHR$(48 + nint); CHR$(65 + nExp)
         'PRINT "[Bezeichnung]"
         FOR i = 0 TO nint - 1
           FOR j = 0 TO nExp
@@ -573,7 +573,7 @@ SUB SpeicherLoesung
   PRINT "' Needs"; nint; " intervals"
   PRINT "' Uses polynoms up to order"; nExp
   PRINT "' "
-  PRINT "FUNCTION Fine"; CHR$(48 + nc); CHR$(48 + nGrd); CHR$(48 + nint); CHR$(65 + nExp)
+  PRINT "FUNCTION Spline"; CHR$(48 + nc); CHR$(48 + nGrd); CHR$(48 + nint); CHR$(65 + nExp)
   PRINT #1, "'"
   IF nc > 0 THEN
     PRINT #1, "'"; USING "##"; nc;
@@ -586,7 +586,7 @@ SUB SpeicherLoesung
   PRINT #1, "' Uses polynoms up to order"; nExp
   PRINT #1, "' "
   PRINT #1, "DEFDBL A-Z"
-  PRINT #1, "FUNCTION Fine"; CHR$(48 + nc); CHR$(48 + nGrd); CHR$(48 + nint); CHR$(65 + nExp); "(t)"
+  PRINT #1, "FUNCTION Spline"; CHR$(48 + nc); CHR$(48 + nGrd); CHR$(48 + nint); CHR$(65 + nExp); "(t)"
   PRINT #1, "  x = abs(t)"
   PRINT #1, "  SELECT CASE x"
   FOR j = 0 TO nint - 1
@@ -596,11 +596,11 @@ SUB SpeicherLoesung
     PRINT #1, "      x = ";
     PRINT #1, USING "##"; j + 1;
     PRINT #1, "# - x"
-    PRINT #1, "      Fine"; CHR$(48 + nc); CHR$(48 + nGrd); CHR$(48 + nint); CHR$(65 + nExp); " = ";
+    PRINT #1, "      Spline"; CHR$(48 + nc); CHR$(48 + nGrd); CHR$(48 + nint); CHR$(65 + nExp); " =";
     iflag = 0
     FOR k = nExp TO 0 STEP -1
       i = idx(k, j)
-
+      PRINT #1, " ";
       IF zaehler(i) THEN
         IF zaehler(i) < 0 THEN
           PRINT #1, "-";
@@ -611,23 +611,23 @@ SUB SpeicherLoesung
         END IF
         iflag = -1
         IF Nenner(i) > 1 THEN
-          PRINT #1, USING "########"; ABS(zaehler(i));
+          PRINT #1, ABS(zaehler(i));
           PRINT #1, "# /";
-          PRINT #1, USING "########"; Nenner(i);
+          PRINT #1, Nenner(i);
           IF k >= 1 THEN
-            PRINT #1, "# *";
+            PRINT #1, "# * ";
+          ELSE
+            PRINT #1, "#";
+          END IF
+        ELSEIF ABS(zaehler(i)) > 1 THEN
+          PRINT #1, ABS(zaehler(i));
+          IF k >= 1 THEN
+            PRINT #1, "# * ";
           ELSE
             PRINT #1, "#";
           END IF
         ELSE
-          IF ABS(zaehler(i)) > 1 THEN
-            PRINT #1, USING "########"; ABS(zaehler(i));
-            IF k >= 1 THEN
-              PRINT #1, "# *";
-            ELSE
-              PRINT #1, "#";
-            END IF
-          END IF
+          PRINT #1, " ";
         END IF
         SELECT CASE k
           CASE 0
@@ -641,36 +641,36 @@ SUB SpeicherLoesung
     PRINT #1,
   NEXT j
   PRINT #1, "    CASE ELSE"
-  PRINT #1, "      Fine"; CHR$(48 + nc); CHR$(48 + nGrd); CHR$(48 + nint); CHR$(65 + nExp); " = 0#"
+  PRINT #1, "      Spline"; CHR$(48 + nc); CHR$(48 + nGrd); CHR$(48 + nint); CHR$(65 + nExp); " = 0#"
   PRINT #1, "  END SELECT"
   PRINT #1, "END FUNCTION"
 END SUB
 
 SUB SpiegelPunkte
-DIM dx AS DOUBLE
-DIM i AS INTEGER
-DIM iPas(15) AS INTEGER
-DIM j AS INTEGER
-DIM sum AS DOUBLE
+  DIM dx AS DOUBLE
+  DIM i AS INTEGER
+  DIM iPas(15) AS INTEGER
+  DIM j AS INTEGER
+  DIM sum AS DOUBLE
 
-CLS
-iPas(0) = -1
-FOR i = 1 TO 11
-  FOR j = 15 TO 1 STEP -1
-    iPas(j) = iPas(j) - iPas(j - 1)
-    PRINT USING "#####"; iPas(j);
-  NEXT j
-  PRINT USING "#####"; iPas(j)
-NEXT i
-dx = 0
-FOR i = 0 TO 10
-  sum = 0
-  FOR j = 1 TO 15
-    sum = sum + iPas(j) * (j + dx) ^ i
-  NEXT j
-  PRINT USING "##"; i;
-  PRINT ":"; sum - dx ^ i
-NEXT i
+  CLS
+  iPas(0) = -1
+  FOR i = 1 TO 11
+    FOR j = 15 TO 1 STEP -1
+      iPas(j) = iPas(j) - iPas(j - 1)
+      PRINT USING "#####"; iPas(j);
+    NEXT j
+    PRINT USING "#####"; iPas(j)
+  NEXT i
+  dx = 0
+  FOR i = 0 TO 10
+    sum = 0
+    FOR j = 1 TO 15
+      sum = sum + iPas(j) * (j + dx) ^ i
+    NEXT j
+    PRINT USING "##"; i;
+    PRINT ":"; sum - dx ^ i
+  NEXT i
 
 END SUB
 
