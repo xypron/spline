@@ -1,5 +1,10 @@
 all:
 	fbc splinefind.bas
 
+check:
+	./splinefind spline.bas > /dev/null
+	fbc -x splinetest splinetest.bas spline.bas
+	./splinetest
+
 clean:
-	rm splinefind
+	rm -f spline splinefind splinetest *~
