@@ -12,7 +12,5 @@ Building
  For building FreeBasic is needed, which is available from
  http://www.freebasic.net/
 
- <pre>
- make
- ./splinefind filename
- </pre>
+ <pre>make
+./splinefind filename</pre>
