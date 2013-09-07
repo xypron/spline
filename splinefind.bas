@@ -561,6 +561,7 @@ SUB SpeicherLoesung
   DIM i AS INTEGER
   DIM iflag AS INTEGER
   DIM j AS INTEGER
+  DIM jflag AS INTEGER
   DIM k AS INTEGER
   PRINT CHR$(12)
   IF nc > 0 THEN
@@ -585,18 +586,24 @@ SUB SpeicherLoesung
   PRINT #1, "' Needs"; nint; " intervals"
   PRINT #1, "' Uses polynoms up to order"; nExp
   PRINT #1, "' "
-  PRINT #1, "DEFDBL A-Z"
-  PRINT #1, "FUNCTION Spline"; CHR$(48 + nc); CHR$(48 + nGrd); CHR$(48 + nint); CHR$(65 + nExp); "(t)"
+  PRINT #1, "FUNCTION Spline"; CHR$(48 + nc); CHR$(48 + nGrd); CHR$(48 + nint);
+  PRINT #1, CHR$(65 + nExp); "(t AS DOUBLE) AS DOUBLE"
+  PRINT #1, "  DIM x AS DOUBLE"
   PRINT #1, "  x = abs(t)"
-  PRINT #1, "  SELECT CASE x"
+  jflag = 0
   FOR j = 0 TO nint - 1
-    PRINT #1, "    CASE <";
+    IF jflag = 0 THEN
+      PRINT #1, "  IF x <";
+      jflag = 1
+    ELSE
+      PRINT #1, "  ELSEIF x <";
+    ENDIF
     PRINT #1, USING "##"; j + 1;
-    PRINT #1, "#"
-    PRINT #1, "      x = ";
+    PRINT #1, "# THEN"
+    PRINT #1, "    x = ";
     PRINT #1, USING "##"; j + 1;
     PRINT #1, "# - x"
-    PRINT #1, "      Spline"; CHR$(48 + nc); CHR$(48 + nGrd); CHR$(48 + nint); CHR$(65 + nExp); " =";
+    PRINT #1, "    Spline"; CHR$(48 + nc); CHR$(48 + nGrd); CHR$(48 + nint); CHR$(65 + nExp); " =";
     iflag = 0
     FOR k = nExp TO 0 STEP -1
       i = idx(k, j)
@@ -640,9 +647,9 @@ SUB SpeicherLoesung
     NEXT k
     PRINT #1,
   NEXT j
-  PRINT #1, "    CASE ELSE"
-  PRINT #1, "      Spline"; CHR$(48 + nc); CHR$(48 + nGrd); CHR$(48 + nint); CHR$(65 + nExp); " = 0#"
-  PRINT #1, "  END SELECT"
+  PRINT #1, "  ELSE"
+  PRINT #1, "    Spline"; CHR$(48 + nc); CHR$(48 + nGrd); CHR$(48 + nint); CHR$(65 + nExp); " = 0#"
+  PRINT #1, "  END IF"
   PRINT #1, "END FUNCTION"
 END SUB
 
