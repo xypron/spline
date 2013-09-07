@@ -1,0 +1,9 @@
+Building from git repository
+============================
+
+For compilation FreeBasic is needed, see
+http://www.freebasic.net/
+
+Compile with
+make
+
